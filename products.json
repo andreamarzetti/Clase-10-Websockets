@@ -1,0 +1,112 @@
+[
+  {
+    "id": "lrf2q6br",
+    "title": "01",
+    "description": "Remera 1",
+    "code": "Descripción de la remera 1",
+    "price": 100,
+    "status": true,
+    "stock": "remera1.jpg",
+    "category": "rem1",
+    "thumbnails": 10
+  },
+  {
+    "id": "lrf2q6c1",
+    "title": "02",
+    "description": "Pantalón 1",
+    "code": "Descripción del pantalón 1",
+    "price": 150,
+    "status": true,
+    "stock": "pantalon1.jpg",
+    "category": "pan1",
+    "thumbnails": 8
+  },
+  {
+    "id": "lrf2q6c8",
+    "title": "03",
+    "description": "Camisa 1",
+    "code": "Descripción de la camisa 1",
+    "price": 90,
+    "status": true,
+    "stock": "camisa1.jpg",
+    "category": "cam1",
+    "thumbnails": 12
+  },
+  {
+    "id": "lrf2q6cd",
+    "title": "04",
+    "description": "Vestido 1",
+    "code": "Descripción del vestido 1",
+    "price": 200,
+    "status": true,
+    "stock": "vestido1.jpg",
+    "category": "vest1",
+    "thumbnails": 5
+  },
+  {
+    "id": "lrf2q6ch",
+    "title": "05",
+    "description": "Sweater 1",
+    "code": "Descripción del sweater 1",
+    "price": 120,
+    "status": true,
+    "stock": "sweater1.jpg",
+    "category": "swe1",
+    "thumbnails": 15
+  },
+  {
+    "id": "lrf2q6co",
+    "title": "06",
+    "description": "Jean 1",
+    "code": "Descripción del jean 1",
+    "price": 130,
+    "status": true,
+    "stock": "jean1.jpg",
+    "category": "jean1",
+    "thumbnails": 9
+  },
+  {
+    "id": "lrf2q6ct",
+    "title": "07",
+    "description": "Short 1",
+    "code": "Descripción del short 1",
+    "price": 80,
+    "status": true,
+    "stock": "short1.jpg",
+    "category": "short1",
+    "thumbnails": 20
+  },
+  {
+    "id": "lrf2q6cx",
+    "title": "08",
+    "description": "Chaqueta 1",
+    "code": "Descripción de la chaqueta 1",
+    "price": 180,
+    "status": true,
+    "stock": "chaqueta1.jpg",
+    "category": "chaqueta1",
+    "thumbnails": 7
+  },
+  {
+    "id": "lrf2q6d5",
+    "title": "09",
+    "description": "Bufanda 1",
+    "code": "Descripción de la bufanda 1",
+    "price": 50,
+    "status": true,
+    "stock": "bufanda1.jpg",
+    "category": "bufanda1",
+    "thumbnails": 25
+  },
+  {
+    "id": "lrf2q6dd",
+    "title": "10",
+    "description": "Top 1",
+    "code": "Descripción del top 1",
+    "price": 70,
+    "status": true,
+    "stock": "top1.jpg",
+    "category": "top1",
+    "thumbnails": 18
+  }
+]
