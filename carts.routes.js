@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const CartManager = require("../CartManager"); // Ajusta la ruta según la estructura de tu proyecto
+const CartManager = require("./CartManager"); // Ajusta la ruta según la estructura de tu proyecto
 
 const cartManagerInstance = new CartManager();
 

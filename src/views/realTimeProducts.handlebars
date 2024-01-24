@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos en Tiempo Real</title>
+</head>
+<body>
+    <h1>Lista de Productos en Tiempo Real</h1>
+
+    <ul id="productList">
+        {{#each products}}
+            <li>
+                {{title}} - {{description}} - {{price}} - {{stock}}
+                <img src="{{thumbnails}}" alt="{{title}}" width="50">
+            </li>
+        {{/each}}
+    </ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        // Escuchar eventos de actualización de productos
+        socket.on('updateProducts', (products) => {
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+
+            products.forEach((product) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${product.title} - ${product.description} - ${product.price} - ${product.stock} <img src="${product.thumbnails}" alt="${product.title}" width="50">`;
+                productList.appendChild(listItem);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,14 +1,16 @@
+// Importa los módulos utilizando require para mantener la consistencia con otros archivos
 const express = require("express");
 const app = express();
+const path = require("path");
 const ProductManager = require("./ProductManager");
 const CartManager = require("./CartManager");
-const productRouter = require("./routes/products.routes"); // Importar el router de productos
-const cartsRoutes = require("./routes/carts.routes");
+const productRouter = require("./products.routes");
+const cartsRoutes = require("./carts.routes");
 
-const productManagerInstance = new ProductManager(); // Crear una instancia de ProductManager
+const productManagerInstance = new ProductManager();
 const cartManagerInstance = new CartManager();
 
-app.use(express.json()); // Agregar middleware para parsear JSON
+app.use(express.json());
 
 app.get("/ping", (req, res) => {
     res.send("pong");
@@ -30,9 +32,9 @@ app.get("/products/:productId", (req, res) => {
     }
 });
 
-app.use("/api/products", productRouter); // Montar el router de productos
+app.use("/api/products", productRouter);
 app.use("/api/carts", cartsRoutes);
 
-app.listen(8080, () => {
+const server = app.listen(8080, () => {
     console.log("Aplicacion funcionando en el puerto 8080");
 });
