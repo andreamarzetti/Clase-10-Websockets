@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const ProductManager = require("./ProductManager");
+import ProductManager from "../ProductManager.js";
 
 const productManagerInstance = new ProductManager();
 
@@ -59,4 +59,4 @@ router.delete("/:productId", (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

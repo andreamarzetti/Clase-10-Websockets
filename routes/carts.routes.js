@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const CartManager = require("./CartManager"); // Ajusta la ruta según la estructura de tu proyecto
+import CartManager from "../CartManager.js"; // Ajusta la ruta según la estructura de tu proyecto
 
 const cartManagerInstance = new CartManager();
 
@@ -29,4 +29,4 @@ router.post("/:cid/product/:pid", (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

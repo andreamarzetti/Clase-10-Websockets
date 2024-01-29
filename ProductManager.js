@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 class ProductManager {
     constructor() {
@@ -10,18 +10,17 @@ class ProductManager {
 
     getProducts(limit = null) {
         let productsToReturn = this.products;
-    
+
         if (limit !== null && limit > 0 && limit <= this.products.length) {
             productsToReturn = this.products.slice(0, limit);
         }
-    
+
         if (productsToReturn.length === 0) {
             return 'No hay productos disponibles actualmente.';
         }
-    
+
         return productsToReturn;
     }
-    
 
     addProduct(title, description, code, price, stock, category, thumbnails) {
         const existingProduct = this.products.find((p) => p.code === code);
@@ -51,7 +50,6 @@ class ProductManager {
         // Función para autogenerar un ID único
         return new Date().getTime().toString(36);
     }
-    
 
     getProductById(id) {
         const foundProduct = this.products.find((p) => p.id === id);
@@ -65,24 +63,24 @@ class ProductManager {
 
     updateProduct(id, updatedFields) {
         const productIndex = this.products.findIndex((p) => p.id === id);
-    
+
         if (productIndex === -1) {
             throw new Error('Producto no encontrado. ID inválido.');
         }
-    
+
         this.products[productIndex] = { ...this.products[productIndex], ...updatedFields };
         this.saveProducts();
-    
+
         return this.products[productIndex];
     }
-    
+
     deleteProduct(id) {
         const productIndex = this.products.findIndex((p) => p.id === id);
-    
+
         if (productIndex === -1) {
             throw new Error('Producto no encontrado. ID inválido.');
         }
-    
+
         this.products.splice(productIndex, 1);
         this.saveProducts();
     }
@@ -94,12 +92,13 @@ class ProductManager {
             throw new Error('Error al guardar los productos en el archivo.');
         }
     }
+
     loadProducts() {
         try {
             // Comentar o eliminar esta línea para evitar la lectura de products.json
             // const data = fs.readFileSync('products.json', 'utf8');
             // return JSON.parse(data);
-    
+
             // En su lugar, retornar un arreglo vacío
             return [];
         } catch (error) {
@@ -121,11 +120,11 @@ class ProductManager {
             { id: '10', title: 'Top 1', description: 'Descripción del top 1', price: 70, thumbnail: 'top1.jpg', code: 'top1', stock: 18 },
             // ... Otros productos
         ];
-    
+
         initialProducts.forEach((product) => {
             this.addProduct(product.id, product.title, product.description, product.price, product.thumbnail, product.code, product.stock);
         });
     }
 }
 
-module.exports = ProductManager;
+export default ProductManager;
