@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import handlebars from "handlebars";
 import exphbs from "express-handlebars";
 import ProductManager from "../ProductManager.js";
 
@@ -32,9 +31,18 @@ app.get("/products/:productId", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    // Agregar lógica para visualizar home.handlebars
-    res.render("home");
+    const productManagerInstance = new ProductManager();
+    const products = productManagerInstance.getProducts();
+    res.render("home", { products });
 });
+
+
+app.get("/products", (req, res) => {
+    const productManagerInstance = new ProductManager();
+    const products = productManagerInstance.getProducts();
+    res.render("products", { products });
+});
+
 
 app.get("/realtimeproducts", (req, res) => {
     const productManagerInstance = new ProductManager();
@@ -42,8 +50,7 @@ app.get("/realtimeproducts", (req, res) => {
 });
 
 // Configuración del motor de Handlebars
-app.engine("handlebars" , handlebars.engine);
-app.engine("handlebars", exphbs());
+app.engine("handlebars" , exphbs.engine());
 app.set("views", path.join(__dirname, "src", "views"));
 app.set("view engine", "handlebars");
 

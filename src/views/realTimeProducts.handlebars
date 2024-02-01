@@ -1,26 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Productos en Tiempo Real</title>
 </head>
+
 <body>
     <h1>Lista de Productos en Tiempo Real</h1>
 
     <ul id="productList">
         {{#each products}}
-            <li>
-                {{title}} - {{description}} - {{price}} - {{stock}}
-                <img src="{{thumbnails}}" alt="{{title}}" width="50">
-            </li>
+        <li>
+            {{title}} - {{description}} - {{price}} - {{stock}}
+            <img src="{{thumbnails}}" alt="{{title}}" width="50">
+        </li>
         {{/each}}
     </ul>
+
+    <form id="updateForm">
+        <label for="updateTitle">Nuevo Título:</label>
+        <input type="text" id="updateTitle" name="updateTitle">
+
+        <label for="updateDescription">Nueva Descripción:</label>
+        <input type="text" id="updateDescription" name="updateDescription">
+
+        <label for="updatePrice">Nuevo Precio:</label>
+        <input type="number" id="updatePrice" name="updatePrice" step="0.01">
+
+        <label for="updateStock">Nuevo Stock:</label>
+        <input type="number" id="updateStock" name="updateStock">
+
+        <label for="updateThumbnails">Nuevos Thumbnails:</label>
+        <input type="text" id="updateThumbnails" name="updateThumbnails">
+
+        <button type="button" onclick="updateProduct()">Actualizar Producto</button>
+    </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
         const socket = io();
-
+        
         // Escuchar eventos de actualización de productos
         socket.on('updateProducts', (products) => {
             const productList = document.getElementById('productList');
@@ -32,6 +53,28 @@
                 productList.appendChild(listItem);
             });
         });
+
+        // Función para actualizar un producto
+        function updateProduct() {
+            const updateTitle = document.getElementById('updateTitle').value;
+            const updateDescription = document.getElementById('updateDescription').value;
+            const updatePrice = document.getElementById('updatePrice').value;
+            const updateStock = document.getElementById('updateStock').value;
+            const updateThumbnails = document.getElementById('updateThumbnails').value;
+
+            // Enviar los nuevos datos al servidor
+            socket.emit('updateProduct', {
+                title: updateTitle,
+                description: updateDescription,
+                price: updatePrice,
+                stock: updateStock,
+                thumbnails: updateThumbnails
+            });
+
+            // Limpiar los campos del formulario
+            document.getElementById('updateForm').reset();
+        }
     </script>
 </body>
+
 </html>
