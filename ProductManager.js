@@ -22,7 +22,7 @@ class ProductManager {
         return productsToReturn;
     }
 
-    addProduct(title, description, code, price, stock, category, thumbnails) {
+    addProduct(id, title, description, price, thumbnail, code, stock) {
         const existingProduct = this.products.find((p) => p.code === code);
 
         if (existingProduct) {
@@ -30,15 +30,15 @@ class ProductManager {
         }
 
         const newProduct = {
-            id: this.generateUniqueId(), // Autogenerar el ID
-            title,
-            description,
-            code,
-            price,
+            id: id,
+            title: title,
+            description: description,
+            code: code,
+            price: price,
             status: true, // Status es true por defecto
-            stock,
-            category,
-            thumbnails,
+            stock: stock,
+            category: code, // Usando el código como categoría por defecto
+            thumbnails: thumbnail // Asignando correctamente el campo thumbnails
         };
 
         this.products.push(newProduct);

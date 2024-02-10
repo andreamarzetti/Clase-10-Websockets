@@ -1,112 +1,112 @@
 [
   {
-    "id": "ls3btuab",
-    "title": "01",
-    "description": "Remera 1",
-    "code": "Descripción de la remera 1",
+    "id": "01",
+    "title": "Remera 1",
+    "description": "Descripción de la remera 1",
+    "code": "rem1",
     "price": 100,
     "status": true,
-    "stock": "remera1.jpg",
+    "stock": 10,
     "category": "rem1",
-    "thumbnails": 10
+    "thumbnails": "remera1.jpg"
   },
   {
-    "id": "ls3btuaw",
-    "title": "02",
-    "description": "Pantalón 1",
-    "code": "Descripción del pantalón 1",
+    "id": "02",
+    "title": "Pantalón 1",
+    "description": "Descripción del pantalón 1",
+    "code": "pan1",
     "price": 150,
     "status": true,
-    "stock": "pantalon1.jpg",
+    "stock": 8,
     "category": "pan1",
-    "thumbnails": 8
+    "thumbnails": "pantalon1.jpg"
   },
   {
-    "id": "ls3btub0",
-    "title": "03",
-    "description": "Camisa 1",
-    "code": "Descripción de la camisa 1",
+    "id": "03",
+    "title": "Camisa 1",
+    "description": "Descripción de la camisa 1",
+    "code": "cam1",
     "price": 90,
     "status": true,
-    "stock": "camisa1.jpg",
+    "stock": 12,
     "category": "cam1",
-    "thumbnails": 12
+    "thumbnails": "camisa1.jpg"
   },
   {
-    "id": "ls3btuba",
-    "title": "04",
-    "description": "Vestido 1",
-    "code": "Descripción del vestido 1",
+    "id": "04",
+    "title": "Vestido 1",
+    "description": "Descripción del vestido 1",
+    "code": "vest1",
     "price": 200,
     "status": true,
-    "stock": "vestido1.jpg",
+    "stock": 5,
     "category": "vest1",
-    "thumbnails": 5
+    "thumbnails": "vestido1.jpg"
   },
   {
-    "id": "ls3btue0",
-    "title": "05",
-    "description": "Sweater 1",
-    "code": "Descripción del sweater 1",
+    "id": "05",
+    "title": "Sweater 1",
+    "description": "Descripción del sweater 1",
+    "code": "swe1",
     "price": 120,
     "status": true,
-    "stock": "sweater1.jpg",
+    "stock": 15,
     "category": "swe1",
-    "thumbnails": 15
+    "thumbnails": "sweater1.jpg"
   },
   {
-    "id": "ls3btue3",
-    "title": "06",
-    "description": "Jean 1",
-    "code": "Descripción del jean 1",
+    "id": "06",
+    "title": "Jean 1",
+    "description": "Descripción del jean 1",
+    "code": "jean1",
     "price": 130,
     "status": true,
-    "stock": "jean1.jpg",
+    "stock": 9,
     "category": "jean1",
-    "thumbnails": 9
+    "thumbnails": "jean1.jpg"
   },
   {
-    "id": "ls3btue7",
-    "title": "07",
-    "description": "Short 1",
-    "code": "Descripción del short 1",
+    "id": "07",
+    "title": "Short 1",
+    "description": "Descripción del short 1",
+    "code": "short1",
     "price": 80,
     "status": true,
-    "stock": "short1.jpg",
+    "stock": 20,
     "category": "short1",
-    "thumbnails": 20
+    "thumbnails": "short1.jpg"
   },
   {
-    "id": "ls3btueb",
-    "title": "08",
-    "description": "Chaqueta 1",
-    "code": "Descripción de la chaqueta 1",
+    "id": "08",
+    "title": "Chaqueta 1",
+    "description": "Descripción de la chaqueta 1",
+    "code": "chaqueta1",
     "price": 180,
     "status": true,
-    "stock": "chaqueta1.jpg",
+    "stock": 7,
     "category": "chaqueta1",
-    "thumbnails": 7
+    "thumbnails": "chaqueta1.jpg"
   },
   {
-    "id": "ls3btuem",
-    "title": "09",
-    "description": "Bufanda 1",
-    "code": "Descripción de la bufanda 1",
+    "id": "09",
+    "title": "Bufanda 1",
+    "description": "Descripción de la bufanda 1",
+    "code": "bufanda1",
     "price": 50,
     "status": true,
-    "stock": "bufanda1.jpg",
+    "stock": 25,
     "category": "bufanda1",
-    "thumbnails": 25
+    "thumbnails": "bufanda1.jpg"
   },
   {
-    "id": "ls3btueq",
-    "title": "10",
-    "description": "Top 1",
-    "code": "Descripción del top 1",
+    "id": "10",
+    "title": "Top 1",
+    "description": "Descripción del top 1",
+    "code": "top1",
     "price": 70,
     "status": true,
-    "stock": "top1.jpg",
+    "stock": 18,
     "category": "top1",
-    "thumbnails": 18
+    "thumbnails": "top1.jpg"
   }
 ]
