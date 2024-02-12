@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Productos en Tiempo Real</title>
 </head>
-
 <body>
     <h1>Lista de Productos en Tiempo Real</h1>
 
@@ -19,29 +17,29 @@
         {{/each}}
     </ul>
 
-    <form id="updateForm">
-        <label for="updateTitle">Nuevo Título:</label>
-        <input type="text" id="updateTitle" name="updateTitle">
+    <form id="addProductForm">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title">
 
-        <label for="updateDescription">Nueva Descripción:</label>
-        <input type="text" id="updateDescription" name="updateDescription">
+        <label for="description">Descripción:</label>
+        <input type="text" id="description" name="description">
 
-        <label for="updatePrice">Nuevo Precio:</label>
-        <input type="number" id="updatePrice" name="updatePrice" step="0.01">
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" step="0.01">
 
-        <label for="updateStock">Nuevo Stock:</label>
-        <input type="number" id="updateStock" name="updateStock">
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock">
 
-        <label for="updateThumbnails">Nuevos Thumbnails:</label>
-        <input type="text" id="updateThumbnails" name="updateThumbnails">
+        <label for="thumbnails">Thumbnails:</label>
+        <input type="text" id="thumbnails" name="thumbnails">
 
-        <button type="button" onclick="updateProduct()">Actualizar Producto</button>
+        <button type="button" onclick="addProduct()">Agregar Producto</button>
     </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script>
         const socket = io();
-        
+
         // Escuchar eventos de actualización de productos
         socket.on('updateProducts', (products) => {
             const productList = document.getElementById('productList');
@@ -54,27 +52,20 @@
             });
         });
 
-        // Función para actualizar un producto
-        function updateProduct() {
-            const updateTitle = document.getElementById('updateTitle').value;
-            const updateDescription = document.getElementById('updateDescription').value;
-            const updatePrice = document.getElementById('updatePrice').value;
-            const updateStock = document.getElementById('updateStock').value;
-            const updateThumbnails = document.getElementById('updateThumbnails').value;
+        // Función para agregar un nuevo producto
+        function addProduct() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const price = document.getElementById('price').value;
+            const stock = document.getElementById('stock').value;
+            const thumbnails = document.getElementById('thumbnails').value;
 
-            // Enviar los nuevos datos al servidor
-            socket.emit('updateProduct', {
-                title: updateTitle,
-                description: updateDescription,
-                price: updatePrice,
-                stock: updateStock,
-                thumbnails: updateThumbnails
-            });
+            // Enviar los datos del nuevo producto al servidor
+            socket.emit('addProduct', { title, description, price, stock, thumbnails });
 
             // Limpiar los campos del formulario
-            document.getElementById('updateForm').reset();
+            document.getElementById('addProductForm').reset();
         }
     </script>
 </body>
-
 </html>
