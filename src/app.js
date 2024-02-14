@@ -1,7 +1,9 @@
 import express from "express";
 import http from "http";
+import http from "http";
 import path from "path";
 import exphbs from "express-handlebars";
+import { Server } from "socket.io";
 import mongoose from 'mongoose';
 import { Server } from "socket.io"; // Importa Socket.io para el manejo de conexiones WebSocket
 import ProductManager from "../ProductManager.js";
