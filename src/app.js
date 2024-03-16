@@ -1,20 +1,18 @@
 import express from "express";
 import http from "http";
-import http from "http";
 import path from "path";
 import exphbs from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from 'mongoose';
-import { Server } from "socket.io"; // Importa Socket.io para el manejo de conexiones WebSocket
-import ProductManager from "../ProductManager.js";
+import ProductManager from "./ProductManager.js"; // Ajusta la ruta según la ubicación real de ProductManager.js
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server); // Crea una instancia de Server para manejar WebSocket
+const io = new Server(server);
 const __dirname = path.resolve();
 
 // URL de conexión a tu base de datos en MongoDB Atlas
-const uri = "mongodb+srv://andreamarzetti8:<sanlorenzo888>@cluster0.o99mhzr.mongodb.net/ecommerce?retryWrites=true&w=majority";
+const uri = "mongodb+srv://andreamarzetti8:sanlorenzo888@cluster0.o99mhzr.mongodb.net/ecommerce?retryWrites=true&w=majority";
 
 // Conexión a la base de datos
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -38,21 +36,37 @@ app.get("/ping", (req, res) => {
     res.send("pong");
 });
 
-app.get("/home", (req, res) => {
-    const productManagerInstance = new ProductManager();
-    const products = productManagerInstance.getProducts();
-    res.render("home", { products });
+app.get("/home", async (req, res) => {
+    try {
+        const productManagerInstance = new ProductManager();
+        const products = await productManagerInstance.getProducts();
+        res.render("home", { products });
+    } catch (error) {
+        console.error('Error al obtener productos:', error);
+        res.status(500).send('Error interno del servidor');
+    }
 });
 
-app.get("/products", (req, res) => {
-    const productManagerInstance = new ProductManager();
-    const products = productManagerInstance.getProducts();
-    res.render("products", { products });
+app.get("/products", async (req, res) => {
+    try {
+        const productManagerInstance = new ProductManager();
+        const products = await productManagerInstance.getProducts();
+        res.render("products", { products });
+    } catch (error) {
+        console.error('Error al obtener productos:', error);
+        res.status(500).send('Error interno del servidor');
+    }
 });
 
-app.get("/realtimeproducts", (req, res) => {
-    const productManagerInstance = new ProductManager();
-    res.render("realTimeProducts", { products: productManagerInstance.getProducts() });
+app.get("/realtimeproducts", async (req, res) => {
+    try {
+        const productManagerInstance = new ProductManager();
+        const products = await productManagerInstance.getProducts();
+        res.render("realTimeProducts", { products });
+    } catch (error) {
+        console.error('Error al obtener productos:', error);
+        res.status(500).send('Error interno del servidor');
+    }
 });
 
 // Manejo de conexiones WebSocket
@@ -60,13 +74,18 @@ io.on("connection", (socket) => {
     console.log("A user connected");
 
     // Escuchar el evento para agregar un nuevo producto
-    socket.on("addProduct", (product) => {
-        const { title, description, price, stock, thumbnails } = product;
-        const id = productManagerInstance.generateUniqueId();
-        productManagerInstance.addProduct(id, title, description, price, thumbnails, id, stock);
+    socket.on("addProduct", async (product) => {
+        try {
+            const { title, description, price, stock, thumbnails } = product;
+            const productManagerInstance = new ProductManager();
+            const id = productManagerInstance.generateUniqueId();
+            await productManagerInstance.addProduct(id, title, description, price, thumbnails, id, stock);
 
-        // Emitir el evento updateProducts para actualizar ambas páginas
-        io.emit("updateProducts", productManagerInstance.getProducts());
+            // Emitir el evento updateProducts para actualizar ambas páginas
+            io.emit("updateProducts", await productManagerInstance.getProducts());
+        } catch (error) {
+            console.error('Error al agregar producto:', error);
+        }
     });
 
     socket.on("disconnect", () => {
