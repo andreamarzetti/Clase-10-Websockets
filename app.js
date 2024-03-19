@@ -4,7 +4,7 @@ import path from "path";
 import exphbs from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from 'mongoose';
-import ProductManager from "./ProductManager.js"; // Ajusta la ruta según la ubicación real de ProductManager.js
+import ProductManager from "./src/dao/mongodb/manager/ProductManager.js"; // Ajusta la ruta según la ubicación real de ProductManager.js
 
 const app = express();
 const server = http.createServer(app);
@@ -12,7 +12,7 @@ const io = new Server(server);
 const __dirname = path.resolve();
 
 // URL de conexión a tu base de datos en MongoDB Atlas
-const uri = "mongodb+srv://andreamarzetti8:sanlorenzo888@cluster0.o99mhzr.mongodb.net/ecommerce?retryWrites=true&w=majority";
+const uri = "mongodb+srv://AndreaMarzetti:<Sanlorenzo999>@cluster1.ecdutkg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1";
 
 // Conexión a la base de datos
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
