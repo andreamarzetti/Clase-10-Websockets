@@ -1,4 +1,4 @@
-import CartModel from '../dao/models/CartModel.js';
+import CartModel from '../dao/mongodb/models/CartModel.js'; // Importar el modelo de carrito de MongoDB
 
 class CartManager {
     async getCarts() {

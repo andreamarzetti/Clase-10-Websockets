@@ -1,13 +1,45 @@
 import express from "express";
 const router = express.Router();
-import ProductManager from "../dao/fileSystem/ProductManager.js";
+import ProductManager from "..//ProductManager.js";
 
 const productManagerInstance = new ProductManager();
 
-router.get("/", (req, res) => {
-    const limit = req.query.limit ? parseInt(req.query.limit) : null;
-    const productos = productManagerInstance.getProducts(limit);
-    res.send(productos);
+router.get("/", async (req, res) => {
+    try {
+        let { limit = 10, page = 1, sort, query } = req.query;
+        limit = parseInt(limit);
+        page = parseInt(page);
+        const result = await productManagerInstance.getProducts(limit, page, sort, query);
+        
+        const totalPages = Math.ceil(result.totalItems / limit);
+        const hasNextPage = page < totalPages;
+        const hasPrevPage = page > 1;
+        const nextPage = hasNextPage ? page + 1 : null;
+        const prevPage = hasPrevPage ? page - 1 : null;
+        const prevLink = hasPrevPage ? `/products?page=${prevPage}&limit=${limit}` : null;
+        const nextLink = hasNextPage ? `/products?page=${nextPage}&limit=${limit}` : null;
+
+        const response = {
+            status: "success",
+            payload: result.products,
+            totalPages: totalPages,
+            prevPage: prevPage,
+            nextPage: nextPage,
+            page: page,
+            hasPrevPage: hasPrevPage,
+            hasNextPage: hasNextPage,
+            prevLink: prevLink,
+            nextLink: nextLink
+        };
+
+        res.send(response);
+    } catch (error) {
+        console.error('Error al obtener productos:', error);
+        res.status(500).send({
+            status: "error",
+            message: 'Error interno del servidor'
+        });
+    }
 });
 
 router.get("/:productId", (req, res) => {

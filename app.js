@@ -12,10 +12,10 @@ const io = new Server(server);
 const __dirname = path.resolve();
 
 // URL de conexión a tu base de datos en MongoDB Atlas
-const uri = "mongodb+srv://AndreaMarzetti:<Sanlorenzo999>@cluster1.ecdutkg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1";
+const uri = "mongodb+srv://<AndreaMarzetti>:<PNC3sKkQ69d61Rhg>@cluster1.ecdutkg.mongodb.net/<ecommerce>?retryWrites=true&w=majority&appName=Cluster1";
 
 // Conexión a la base de datos
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(uri)
   .then(() => {
     console.log('Conexión a MongoDB Atlas establecida');
   })
@@ -31,7 +31,7 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Definición de las rutas HTTP
+// Definición de las demás rutas HTTP
 app.get("/ping", (req, res) => {
     res.send("pong");
 });

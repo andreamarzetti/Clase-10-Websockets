@@ -1,62 +1,21 @@
 import ProductModel from '../models/ProductModel.js';
 
 class ProductManager {
-    async getProducts(limit = null) {
-        try {
-            let query = ProductModel.find();
-            if (limit !== null) {
-                query = query.limit(limit);
-            }
-            return await query.exec();
-        } catch (error) {
-            throw new Error('Error al obtener los productos de la base de datos.');
-        }
+    async getProducts(limit = 10, page = 1, sort = {}, query = {}) {
+        const skip = (page - 1) * limit;
+        const products = await ProductModel.find(query)
+                                           .sort(sort)
+                                           .skip(skip)
+                                           .limit(limit);
+        return products;
     }
 
     async addProduct(title, description, price, thumbnail, code, stock) {
-        try {
-            const newProduct = new ProductModel({ title, description, price, thumbnail, code, stock });
-            return await newProduct.save();
-        } catch (error) {
-            throw new Error('Error al agregar el producto a la base de datos.');
-        }
+        const newProduct = new ProductModel({ title, description, price, thumbnail, code, stock });
+        return await newProduct.save();
     }
 
-    async getProductById(id) {
-        try {
-            return await ProductModel.findById(id);
-        } catch (error) {
-            throw new Error('Error al obtener el producto de la base de datos.');
-        }
-    }
-
-    async updateProduct(id, updatedFields) {
-        try {
-            const product = await ProductModel.findById(id);
-            if (!product) {
-                throw new Error('Producto no encontrado. ID inválido.');
-            }
-            Object.assign(product, updatedFields);
-            await product.save();
-            return product;
-        } catch (error) {
-            throw new Error('Error al actualizar el producto en la base de datos.');
-        }
-    }
-
-    async deleteProduct(id) {
-        try {
-            const product = await ProductModel.findByIdAndDelete(id);
-            if (!product) {
-                throw new Error('Producto no encontrado. ID inválido.');
-            }
-            return product;
-        } catch (error) {
-            throw new Error('Error al eliminar el producto de la base de datos.');
-        }
-    }
-
-    // Otros métodos necesarios para manipular productos en la base de datos
+    // Otros métodos para actualizar, eliminar, etc.
 }
 
 export default ProductManager;
