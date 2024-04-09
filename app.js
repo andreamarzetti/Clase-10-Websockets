@@ -1,3 +1,4 @@
+// app.js
 import express from "express";
 import http from "http";
 import path from "path";
@@ -12,7 +13,7 @@ const io = new Server(server);
 const __dirname = path.resolve();
 
 // URL de conexión a tu base de datos en MongoDB Atlas
-const uri = "mongodb+srv://<AndreaMarzetti>:<PNC3sKkQ69d61Rhg>@cluster1.ecdutkg.mongodb.net/<ecommerce>?retryWrites=true&w=majority&appName=Cluster1";
+const uri = "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster1";
 
 // Conexión a la base de datos
 mongoose.connect(uri)
@@ -78,8 +79,7 @@ io.on("connection", (socket) => {
         try {
             const { title, description, price, stock, thumbnails } = product;
             const productManagerInstance = new ProductManager();
-            const id = productManagerInstance.generateUniqueId();
-            await productManagerInstance.addProduct(id, title, description, price, thumbnails, id, stock);
+            await productManagerInstance.addProduct(title, description, price, thumbnails, stock); // No es necesario pasar el ID, se generará automáticamente en el ProductManager
 
             // Emitir el evento updateProducts para actualizar ambas páginas
             io.emit("updateProducts", await productManagerInstance.getProducts());

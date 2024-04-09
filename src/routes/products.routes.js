@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import ProductManager from "..//ProductManager.js";
+import ProductManager from "../dao/mongodb/manager/ProductManager.js";
 
 const productManagerInstance = new ProductManager();
 

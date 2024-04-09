@@ -1,6 +1,6 @@
 import express from "express";
 const router = express.Router();
-import CartManager from "../CartManager.js"; // Ajusta la ruta según la estructura de tu proyecto
+import CartManager from "../dao/mongodb/manager/CartManager.js";
 
 const cartManagerInstance = new CartManager();
 

@@ -1,3 +1,4 @@
+// ProductManager.js
 import ProductModel from '../models/ProductModel.js';
 
 class ProductManager {
@@ -10,8 +11,8 @@ class ProductManager {
         return products;
     }
 
-    async addProduct(title, description, price, thumbnail, code, stock) {
-        const newProduct = new ProductModel({ title, description, price, thumbnail, code, stock });
+    async addProduct(title, description, price, thumbnails, stock) {
+        const newProduct = new ProductModel({ title, description, price, thumbnails, stock });
         return await newProduct.save();
     }
 
