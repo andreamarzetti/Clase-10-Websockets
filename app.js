@@ -1,11 +1,12 @@
-// app.js
 import express from "express";
 import http from "http";
 import path from "path";
 import exphbs from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from 'mongoose';
-import ProductManager from "./src/dao/mongodb/manager/ProductManager.js"; // Ajusta la ruta según la ubicación real de ProductManager.js
+import session from 'express-session';
+import FileStore from 'session-file-store'; // Importa el módulo de almacenamiento en archivos para express-session
+import User from './src/dao/mongodb/models/User.js'; // Ajusta la ruta según la ubicación real de tu modelo de usuario
 
 const app = express();
 const server = http.createServer(app);
@@ -30,44 +31,82 @@ app.set("views", path.join(__dirname, "src", "views"));
 app.set("view engine", "handlebars");
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Definición de las demás rutas HTTP
-app.get("/ping", (req, res) => {
-    res.send("pong");
+// Configuración de express-session con almacenamiento en archivos
+const FileStoreSession = FileStore(session);
+app.use(session({
+    store: new FileStoreSession(), // Usa el módulo de almacenamiento en archivos
+    secret: 'mySecret',
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Ruta para mostrar el formulario de login
+app.get("/login", (req, res) => {
+    res.render("login");
 });
 
-app.get("/home", async (req, res) => {
+// Ruta para procesar la solicitud de login
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
     try {
-        const productManagerInstance = new ProductManager();
-        const products = await productManagerInstance.getProducts();
-        res.render("home", { products });
+        // Implementa la lógica para validar las credenciales del usuario
+        const user = await User.findOne({ email });
+        if (!user || !user.comparePassword(password)) {
+            throw new Error("Credenciales incorrectas");
+        }
+        // Inicia sesión y redirige al usuario a la página de productos
+        req.session.user = user;
+        res.redirect("/products");
     } catch (error) {
-        console.error('Error al obtener productos:', error);
-        res.status(500).send('Error interno del servidor');
+        console.error("Error de autenticación:", error);
+        res.render("login", { error: "Credenciales incorrectas. Inténtalo de nuevo." });
     }
 });
 
-app.get("/products", async (req, res) => {
+// Ruta para mostrar el formulario de registro
+app.get("/register", (req, res) => {
+    res.render("register");
+});
+
+// Ruta para procesar la solicitud de registro
+app.post("/register", async (req, res) => {
+    const { email, password } = req.body;
     try {
-        const productManagerInstance = new ProductManager();
-        const products = await productManagerInstance.getProducts();
-        res.render("products", { products });
+        // Implementa la lógica para registrar al usuario en tu base de datos
+        const newUser = new User({ email, password });
+        await newUser.save();
+        // Inicia sesión y redirige al usuario a la página de productos
+        req.session.user = newUser;
+        res.redirect("/products");
     } catch (error) {
-        console.error('Error al obtener productos:', error);
-        res.status(500).send('Error interno del servidor');
+        console.error("Error al registrar usuario:", error);
+        res.render("register", { error: "Error al registrar usuario. Inténtalo de nuevo." });
     }
 });
 
-app.get("/realtimeproducts", async (req, res) => {
-    try {
-        const productManagerInstance = new ProductManager();
-        const products = await productManagerInstance.getProducts();
-        res.render("realTimeProducts", { products });
-    } catch (error) {
-        console.error('Error al obtener productos:', error);
-        res.status(500).send('Error interno del servidor');
+// Ruta para mostrar la página de productos
+app.get("/products", (req, res) => {
+    // Verifica si el usuario está autenticado
+    if (!req.session.user) {
+        // Si no está autenticado, redirige al usuario a la página de login
+        return res.redirect("/login");
     }
+    // Si está autenticado, muestra la página de productos con un mensaje de bienvenida
+    res.render("products", { user: req.session.user });
+});
+
+// Ruta para cerrar sesión
+app.get("/logout", (req, res) => {
+    // Destruye la sesión del usuario y redirige al usuario a la página de login
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Error al cerrar sesión:", err);
+        }
+        res.redirect("/login");
+    });
 });
 
 // Manejo de conexiones WebSocket
@@ -78,11 +117,7 @@ io.on("connection", (socket) => {
     socket.on("addProduct", async (product) => {
         try {
             const { title, description, price, stock, thumbnails } = product;
-            const productManagerInstance = new ProductManager();
-            await productManagerInstance.addProduct(title, description, price, thumbnails, stock); // No es necesario pasar el ID, se generará automáticamente en el ProductManager
-
-            // Emitir el evento updateProducts para actualizar ambas páginas
-            io.emit("updateProducts", await productManagerInstance.getProducts());
+            // Aquí va la lógica para agregar un producto (omitiendo por simplicidad)
         } catch (error) {
             console.error('Error al agregar producto:', error);
         }
