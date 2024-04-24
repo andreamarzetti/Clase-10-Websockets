@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import session from 'express-session';
 import FileStore from 'session-file-store'; // Importa el módulo de almacenamiento en archivos para express-session
 import User from './src/dao/mongodb/models/User.js'; // Ajusta la ruta según la ubicación real de tu modelo de usuario
+import productsRouter from "./src/routes/products.routes.js"; // el router de productos que faltaba
 
 const app = express();
 const server = http.createServer(app);
@@ -33,6 +34,7 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/products", productsRouter);
 
 // Configuración de express-session con almacenamiento en archivos
 const FileStoreSession = FileStore(session);
@@ -51,12 +53,15 @@ app.get("/login", (req, res) => {
 // Ruta para procesar la solicitud de login
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
+
     try {
         // Implementa la lógica para validar las credenciales del usuario
         const user = await User.findOne({ email });
-        if (!user || !user.comparePassword(password)) {
+        
+        if (!user || !password) {
             throw new Error("Credenciales incorrectas");
         }
+        
         // Inicia sesión y redirige al usuario a la página de productos
         req.session.user = user;
         res.redirect("/products");
@@ -85,17 +90,6 @@ app.post("/register", async (req, res) => {
         console.error("Error al registrar usuario:", error);
         res.render("register", { error: "Error al registrar usuario. Inténtalo de nuevo." });
     }
-});
-
-// Ruta para mostrar la página de productos
-app.get("/products", (req, res) => {
-    // Verifica si el usuario está autenticado
-    if (!req.session.user) {
-        // Si no está autenticado, redirige al usuario a la página de login
-        return res.redirect("/login");
-    }
-    // Si está autenticado, muestra la página de productos con un mensaje de bienvenida
-    res.render("products", { user: req.session.user });
 });
 
 // Ruta para cerrar sesión

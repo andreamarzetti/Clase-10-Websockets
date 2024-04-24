@@ -9,8 +9,9 @@ router.get("/", async (req, res) => {
         let { limit = 10, page = 1, sort, query } = req.query;
         limit = parseInt(limit);
         page = parseInt(page);
+
         const result = await productManagerInstance.getProducts(limit, page, sort, query);
-        
+
         const totalPages = Math.ceil(result.totalItems / limit);
         const hasNextPage = page < totalPages;
         const hasPrevPage = page > 1;
@@ -19,9 +20,12 @@ router.get("/", async (req, res) => {
         const prevLink = hasPrevPage ? `/products?page=${prevPage}&limit=${limit}` : null;
         const nextLink = hasNextPage ? `/products?page=${nextPage}&limit=${limit}` : null;
 
+
+        //console.log(result)
+
         const response = {
             status: "success",
-            payload: result.products,
+            payload: result,
             totalPages: totalPages,
             prevPage: prevPage,
             nextPage: nextPage,
@@ -31,6 +35,7 @@ router.get("/", async (req, res) => {
             prevLink: prevLink,
             nextLink: nextLink
         };
+
 
         res.send(response);
     } catch (error) {
