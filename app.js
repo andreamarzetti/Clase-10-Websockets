@@ -1,3 +1,4 @@
+// app.js
 import express from "express";
 import http from "http";
 import path from "path";
@@ -5,9 +6,9 @@ import exphbs from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from 'mongoose';
 import session from 'express-session';
-import FileStore from 'session-file-store'; // Importa el módulo de almacenamiento en archivos para express-session
-import User from './src/dao/mongodb/models/User.js'; // Ajusta la ruta según la ubicación real de tu modelo de usuario
 import productsRouter from "./src/routes/products.routes.js"; // el router de productos que faltaba
+import sessionRouter from "./src/routes/ressesion.routes.js"; // el nuevo router para login y registro
+import MongoStore from "connect-mongo";
 
 const app = express();
 const server = http.createServer(app);
@@ -18,7 +19,7 @@ const __dirname = path.resolve();
 const uri = "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster1";
 
 // Conexión a la base de datos
-mongoose.connect(uri)
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Conexión a MongoDB Atlas establecida');
   })
@@ -36,61 +37,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/products", productsRouter);
 
-// Configuración de express-session con almacenamiento en archivos
-const FileStoreSession = FileStore(session);
+// Configuración de express-session con almacenamiento en MongoDB
+// Configuración de express-session con almacenamiento en MongoDB
+const store = MongoStore.create({
+    mongoUrl: "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster1",
+    mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
+    ttl: 15,
+});
+
 app.use(session({
-    store: new FileStoreSession(), // Usa el módulo de almacenamiento en archivos
-    secret: 'mySecret',
+    store: store,
+    secret: "PNC3sKkQ69d61Rhg",
     resave: false,
     saveUninitialized: false
 }));
 
-// Ruta para mostrar el formulario de login
-app.get("/login", (req, res) => {
-    res.render("login");
-});
 
-// Ruta para procesar la solicitud de login
-app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        // Implementa la lógica para validar las credenciales del usuario
-        const user = await User.findOne({ email });
-        
-        if (!user || !password) {
-            throw new Error("Credenciales incorrectas");
-        }
-        
-        // Inicia sesión y redirige al usuario a la página de productos
-        req.session.user = user;
-        res.redirect("/products");
-    } catch (error) {
-        console.error("Error de autenticación:", error);
-        res.render("login", { error: "Credenciales incorrectas. Inténtalo de nuevo." });
-    }
-});
-
-// Ruta para mostrar el formulario de registro
-app.get("/register", (req, res) => {
-    res.render("register");
-});
-
-// Ruta para procesar la solicitud de registro
-app.post("/register", async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        // Implementa la lógica para registrar al usuario en tu base de datos
-        const newUser = new User({ email, password });
-        await newUser.save();
-        // Inicia sesión y redirige al usuario a la página de productos
-        req.session.user = newUser;
-        res.redirect("/products");
-    } catch (error) {
-        console.error("Error al registrar usuario:", error);
-        res.render("register", { error: "Error al registrar usuario. Inténtalo de nuevo." });
-    }
-});
+// Usar las rutas de login y registro
+app.use(sessionRouter);
 
 // Ruta para cerrar sesión
 app.get("/logout", (req, res) => {

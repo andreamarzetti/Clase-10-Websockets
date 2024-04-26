@@ -1,5 +1,3 @@
-// src/models/User.js
-
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
@@ -16,6 +14,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['admin', 'user'], // Define los roles permitidos
     default: 'user' // Establece el rol por defecto como 'user'
+  },
+  edad: {
+    type: Number,
+    required: true
+  },
+  nombre: {
+    type: String,
+    required: true
+  },
+  apellido: {
+    type: String,
+    required: true
+  },
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'carts' 
   }
 });
 

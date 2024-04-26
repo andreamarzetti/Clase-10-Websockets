@@ -1,6 +1,14 @@
 import CartModel from '../dao/mongodb/models/CartModel.js'; // Importar el modelo de carrito de MongoDB
 
 class CartManager {
+
+    // Método para crear un nuevo carrito
+    async createCart(userId) {
+        const newCart = new CartModel({ user: userId, products: [] });
+        await newCart.save();
+        return newCart;
+    }
+
     async getCarts() {
         return await CartModel.find();
     }

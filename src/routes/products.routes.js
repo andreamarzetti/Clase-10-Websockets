@@ -20,9 +20,6 @@ router.get("/", async (req, res) => {
         const prevLink = hasPrevPage ? `/products?page=${prevPage}&limit=${limit}` : null;
         const nextLink = hasNextPage ? `/products?page=${nextPage}&limit=${limit}` : null;
 
-
-        //console.log(result)
-
         const response = {
             status: "success",
             payload: result,
@@ -36,7 +33,6 @@ router.get("/", async (req, res) => {
             nextLink: nextLink
         };
 
-
         res.send(response);
     } catch (error) {
         console.error('Error al obtener productos:', error);
@@ -47,17 +43,17 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.get("/:productId", (req, res) => {
+router.get("/:productId", async (req, res) => { // Añadido async
     const productId = req.params.productId;
     try {
-        const product = productManagerInstance.getProductById(productId);
+        const product = await productManagerInstance.getProductById(productId); // Añadido await
         res.send(product);
     } catch (error) {
         res.status(404).send({ error: "Producto no encontrado." });
     }
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => { // Añadido async
     const { title, description, code, price, stock, category, thumbnails } = req.body;
 
     if (!title || !description || !code || !price || !stock || !category || !thumbnails) {
@@ -66,19 +62,19 @@ router.post("/", (req, res) => {
     }
 
     try {
-        const newProduct = productManagerInstance.addProduct(title, description, code, price, stock, category, thumbnails);
+        const newProduct = await productManagerInstance.addProduct(title, description, code, price, stock, category, thumbnails); // Añadido await
         res.status(201).send(newProduct);
     } catch (error) {
         res.status(400).send({ error: error.message });
     }
 });
 
-router.put("/:productId", (req, res) => {
+router.put("/:productId", async (req, res) => { // Añadido async
     const productId = req.params.productId;
     const updatedFields = req.body;
 
     try {
-        const updatedProduct = productManagerInstance.updateProduct(productId, updatedFields);
+        const updatedProduct = await productManagerInstance.updateProduct(productId, updatedFields); // Añadido await
         res.send(updatedProduct);
     } catch (error) {
         res.status(404).send({ error: "Producto no encontrado." });
