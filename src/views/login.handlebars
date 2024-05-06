@@ -1,6 +1,17 @@
 <!-- login.handlebars -->
 <form action="/login" method="POST">
-    <input type="email" name="email" placeholder="Email">
-    <input type="password" name="password" placeholder="Contraseña">
+    <input type="email" name="email" placeholder="Correo electrónico" required>
+    <input type="password" name="password" placeholder="Contraseña" required>
+    <input type="text" name="nombre" placeholder="Nombre" required>
+    <input type="text" name="apellido" placeholder="Apellido" required>
+    <input type="number" name="edad" placeholder="Edad" required>
+    <select name="role" required>
+        <option value="user">Usuario</option>
+        <option value="admin">Administrador</option>
+    </select>
     <button type="submit">Iniciar sesión</button>
+
+    <div>
+        <a href="api/session/github"> <button> Iniciar sesión con GitHub </button> </a>
+    </div>
 </form>

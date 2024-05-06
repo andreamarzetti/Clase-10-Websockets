@@ -1,4 +1,3 @@
-// app.js
 import express from "express";
 import http from "http";
 import path from "path";
@@ -6,14 +5,28 @@ import exphbs from "express-handlebars";
 import { Server } from "socket.io";
 import mongoose from 'mongoose';
 import session from 'express-session';
-import productsRouter from "./src/routes/products.routes.js"; // el router de productos que faltaba
-import sessionRouter from "./src/routes/ressesion.routes.js"; // el nuevo router para login y registro
+import productsRouter from "./src/routes/products.routes.js"; 
+import sessionRouter from "./src/routes/session.routes.js";  
 import MongoStore from "connect-mongo";
+import passport from "passport";
+import initializePassport from "./src/config/passport.config.js";
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 const __dirname = path.resolve();
+
+initializePassport();
+app.use(session({
+    secret:"8e4c3c993a8a806dbcf5aedad7cad186779edfc0"
+}));
+
+app.use(passport.initialize());
+
+// Importa las rutas de las vistas y sesiones
+import viewsRouter from "./src/routes/views.routes.js";  // Asegúrate de tener este archivo
+app.use("/", viewsRouter);
+app.use("/api/session", sessionRouter);  // Corregido el nombre de la ruta
 
 // URL de conexión a tu base de datos en MongoDB Atlas
 const uri = "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster1";
@@ -38,7 +51,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/products", productsRouter);
 
 // Configuración de express-session con almacenamiento en MongoDB
-// Configuración de express-session con almacenamiento en MongoDB
 const store = MongoStore.create({
     mongoUrl: "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster1",
     mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
@@ -51,7 +63,6 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
-
 
 // Usar las rutas de login y registro
 app.use(sessionRouter);

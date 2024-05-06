@@ -1,5 +1,6 @@
 // sessionRouter.js
 import express from "express";
+import passport from "passport";
 const router = express.Router();
 
 import User from '../dao/mongodb/models/User.js'; // Ajusta la ruta según la ubicación real de tu modelo de usuario
@@ -37,10 +38,10 @@ router.get("/register", (req, res) => {
 
 // Ruta para procesar la solicitud de registro
 router.post("/register", async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, firstname, lastname, age } = req.body;
     try {
         // Implementa la lógica para registrar al usuario en tu base de datos
-        const newUser = new User({ email, password });
+        const newUser = new User({ email, password, firstname, lastname, age });
         await newUser.save();
         // Inicia sesión y redirige al usuario a la página de productos
         req.session.user = newUser;
@@ -49,6 +50,14 @@ router.post("/register", async (req, res) => {
         console.error("Error al registrar usuario:", error);
         res.render("register", { error: "Error al registrar usuario. Inténtalo de nuevo." });
     }
+});
+
+// Ruta para iniciar sesión con GitHub
+router.get("/auth/github", passport.authenticate("github"));
+
+// Ruta de devolución de llamada de autenticación de GitHub
+router.get("/auth/github/callback", passport.authenticate("github", { failureRedirect: "/login" }), (req, res) => {
+    res.redirect("/products");
 });
 
 export default router;
