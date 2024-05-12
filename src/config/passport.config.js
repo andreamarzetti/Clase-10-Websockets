@@ -3,6 +3,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GitHubStrategy } from 'passport-github';
 import bcrypt from 'bcrypt';
 import User from "../dao/mongodb/models/User.js";
+import config from './config.js';
 
 function initializePassport() {
     const authenticateUser = async (email, password, done) => {
@@ -27,10 +28,11 @@ function initializePassport() {
 
     // Configurar la estrategia de autenticación de GitHub
     passport.use(new GitHubStrategy({
-        clientID: "Iv23liy6573845VpMnDx",
-        clientSecret: "8e4c3c993a8a806dbcf5aedad7cad186779edfc0",
-        callbackURL: 'http://localhost:8080/auth/github/callback'
-      },
+      clientID: "Iv23liy6573845VpMnDx",
+      clientSecret: config.githubClientSecret,
+      callbackURL: `${config.callbackURL}/auth/github/callback`
+    },
+    
       async (accessToken, refreshToken, profile, done) => {
         try {
           // Verificar si el usuario ya existe en la base de datos

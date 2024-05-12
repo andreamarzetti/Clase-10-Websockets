@@ -10,6 +10,8 @@ import sessionRouter from "./src/routes/session.routes.js";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import initializePassport from "./src/config/passport.config.js";
+import config from "./src/config/config.js";
+import cors from "cors";
 
 const app = express();
 const server = http.createServer(app);
@@ -18,7 +20,9 @@ const __dirname = path.resolve();
 
 initializePassport();
 app.use(session({
-    secret:"8e4c3c993a8a806dbcf5aedad7cad186779edfc0"
+    secret: config.sessionSecret,
+    resave: false,
+    saveUninitialized: false
 }));
 
 app.use(passport.initialize());
@@ -29,7 +33,7 @@ app.use("/", viewsRouter);
 app.use("/api/session", sessionRouter);  // Corregido el nombre de la ruta
 
 // URL de conexión a tu base de datos en MongoDB Atlas
-const uri = "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster1";
+const uri = "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority";
 
 // Conexión a la base de datos
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -52,14 +56,14 @@ app.use("/products", productsRouter);
 
 // Configuración de express-session con almacenamiento en MongoDB
 const store = MongoStore.create({
-    mongoUrl: "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster1",
+    mongoUrl: uri,
     mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
     ttl: 15,
 });
 
 app.use(session({
     store: store,
-    secret: "PNC3sKkQ69d61Rhg",
+    secret: config.sessionSecret,
     resave: false,
     saveUninitialized: false
 }));
@@ -97,7 +101,13 @@ io.on("connection", (socket) => {
     });
 });
 
-const PORT = process.env.PORT || 8080;
+app.use(express.json());
+app.use(cors());
+app.get("/test", (req,res)=>{
+    res.send("Respuesta!")
+})
+
+const PORT = config.port;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
