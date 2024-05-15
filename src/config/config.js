@@ -9,5 +9,7 @@ export default {
     githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
     mongoURI: process.env.MONGODB_URI,
     callbackURL: process.env.CALLBACK_URL,
+    gmailUser: process.env.GUSER,
+    gmailPass: process.env.GPASS,
 };
 

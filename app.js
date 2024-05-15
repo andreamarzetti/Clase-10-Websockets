@@ -1,17 +1,20 @@
-import express from "express";
-import http from "http";
-import path from "path";
-import exphbs from "express-handlebars";
-import { Server } from "socket.io";
+import express from 'express';
+import http from 'http';
+import path from 'path';
+import exphbs from 'express-handlebars';
+import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import session from 'express-session';
-import productsRouter from "./src/routes/products.routes.js"; 
-import sessionRouter from "./src/routes/session.routes.js";  
-import MongoStore from "connect-mongo";
-import passport from "passport";
-import initializePassport from "./src/config/passport.config.js";
-import config from "./src/config/config.js";
-import cors from "cors";
+import productsRouter from './src/routes/products.routes.js'; 
+import sessionRouter from './src/routes/session.routes.js';  
+import MongoStore from 'connect-mongo';
+import passport from 'passport';
+import initializePassport from './src/config/passport.config.js';
+import config from './src/config/config.js';
+import cors from 'cors';
+import productsController from './src/controllers/products.controller.js';
+import sessionController from './src/controllers/session.controller.js';
+import transport from './src/config/mailing.js'; 
 
 const app = express();
 const server = http.createServer(app);
@@ -28,12 +31,12 @@ app.use(session({
 app.use(passport.initialize());
 
 // Importa las rutas de las vistas y sesiones
-import viewsRouter from "./src/routes/views.routes.js";  // Asegúrate de tener este archivo
-app.use("/", viewsRouter);
-app.use("/api/session", sessionRouter);  // Corregido el nombre de la ruta
+import viewsRouter from './src/routes/views.routes.js';  // Asegúrate de tener este archivo
+app.use('/', viewsRouter);
+app.use('/api/session', sessionRouter);  // Corregido el nombre de la ruta
 
 // URL de conexión a tu base de datos en MongoDB Atlas
-const uri = "mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority";
+const uri = 'mongodb+srv://AndreaMarzetti:PNC3sKkQ69d61Rhg@cluster1.ecdutkg.mongodb.net/ecommerce?retryWrites=true&w=majority';
 
 // Conexión a la base de datos
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -45,14 +48,14 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   });
 
 // Configuración del motor de Handlebars
-app.engine("handlebars", exphbs.engine());
-app.set("views", path.join(__dirname, "src", "views"));
-app.set("view engine", "handlebars");
+app.engine('handlebars', exphbs.engine());
+app.set('views', path.join(__dirname, 'src', 'views'));
+app.set('view engine', 'handlebars');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/products", productsRouter);
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/products', productsRouter);
 
 // Configuración de express-session con almacenamiento en MongoDB
 const store = MongoStore.create({
@@ -72,22 +75,22 @@ app.use(session({
 app.use(sessionRouter);
 
 // Ruta para cerrar sesión
-app.get("/logout", (req, res) => {
+app.get('/logout', (req, res) => {
     // Destruye la sesión del usuario y redirige al usuario a la página de login
     req.session.destroy((err) => {
         if (err) {
-            console.error("Error al cerrar sesión:", err);
+            console.error('Error al cerrar sesión:', err);
         }
-        res.redirect("/login");
+        res.redirect('/login');
     });
 });
 
 // Manejo de conexiones WebSocket
-io.on("connection", (socket) => {
-    console.log("A user connected");
+io.on('connection', (socket) => {
+    console.log('A user connected');
 
     // Escuchar el evento para agregar un nuevo producto
-    socket.on("addProduct", async (product) => {
+    socket.on('addProduct', async (product) => {
         try {
             const { title, description, price, stock, thumbnails } = product;
             // Aquí va la lógica para agregar un producto (omitiendo por simplicidad)
@@ -96,16 +99,50 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("disconnect", () => {
-        console.log("A user disconnected");
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
     });
 });
 
 app.use(express.json());
 app.use(cors());
-app.get("/test", (req,res)=>{
-    res.send("Respuesta!")
-})
+app.get('/test', (req,res)=>{
+    res.send('Respuesta!')
+});
+
+
+app.get('/mail', async (req, res) => {
+    
+    let result = await transport.sendMail({
+        from: 'TestCoder <andreamarzetti9@gmail.com>',
+        to: 'andreamarzetti9@gmail.com',
+        subject: 'correo de prueba',
+        html: `
+            <div>
+                <h1>¡Esto es un test, pero con imágenes, mira!</h1>
+                <img src="cid:remera1"/>
+            </div>
+        `,
+        attachments: [{
+            filename: 'remera.jpg',
+            path: '', 
+            cid: 'remera1'
+        }]
+    });
+    res.send({ status: 'success', result: 'Email Sent' });
+});
+
+// Rutas para los productos
+app.get('/products', [], productsController.getProducts);
+app.post('/products', [], productsController.createProduct);
+app.get('/products/:id', [], productsController.getProductById);
+app.put('/products/:id', [], productsController.updateProduct);
+app.delete('/products/:id', [], productsController.deleteProduct);
+
+// Rutas para la sesión
+app.post('/login', [], sessionController.login);
+app.post('/register', [], sessionController.register);
+app.post('/logout', [], sessionController.logout);
 
 const PORT = config.port;
 server.listen(PORT, () => {
