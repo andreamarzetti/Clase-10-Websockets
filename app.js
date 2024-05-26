@@ -144,6 +144,10 @@ app.post('/login', [], sessionController.login);
 app.post('/register', [], sessionController.register);
 app.post('/logout', [], sessionController.logout);
 
+// Importa este middleware en tu archivo principal de la aplicación y úsalo como middleware global
+import { errorHandler } from './src/middleware/errorHandler.js';
+app.use(errorHandler);
+
 const PORT = config.port;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
