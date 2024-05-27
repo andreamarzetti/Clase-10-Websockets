@@ -1,29 +1,39 @@
-// Importa el modelo de Product
-import Product from "../dao/mongodb/models/ProductModel.js"; 
+// src/controllers/products.controller.js
+import Product from '../dao/mongodb/models/ProductModel.js';
+import User from '../dao/mongodb/models/User.js';
+import logger from '../config/logger.js';
 
-// Controlador para obtener todos los productos
-const getProducts = async (req, res) => {
+export async function getProducts(req, res) {
     try {
         const products = await Product.find();
         res.json(products);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        logger.error('Error fetching products:', error);
+        res.status(500).json({ message: 'Internal server error.' });
     }
-};
+}
 
-// Controlador para crear un nuevo producto
-const createProduct = async (req, res) => {
-    const product = new Product(req.body);
+export async function createProduct(req, res) {
     try {
-        const newProduct = await product.save();
-        res.status(201).json(newProduct);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
+        const user = await User.findById(req.user._id);
+        if (user.role !== 'premium' && user.role !== 'admin') {
+            return res.status(403).send({ status: 'error', message: 'Only premium users can create products.' });
+        }
 
-// Controlador para obtener un producto por su ID
-const getProductById = async (req, res) => {
+        const newProduct = new Product({
+            ...req.body,
+            owner: user.role === 'premium' ? user._id : 'admin'
+        });
+
+        await newProduct.save();
+        res.send({ status: 'success', message: 'Product created successfully.' });
+    } catch (error) {
+        logger.error('Error creating product:', error);
+        res.status(500).send({ status: 'error', message: 'Internal server error.' });
+    }
+}
+
+export async function getProductById(req, res) {
     try {
         const product = await Product.findById(req.params.id);
         if (!product) {
@@ -31,29 +41,41 @@ const getProductById = async (req, res) => {
         }
         res.json(product);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        logger.error('Error fetching product by ID:', error);
+        res.status(500).json({ message: 'Internal server error.' });
     }
-};
+}
 
-// Controlador para actualizar un producto por su ID
-const updateProduct = async (req, res) => {
+export async function updateProduct(req, res) {
     try {
         const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedProduct);
     } catch (error) {
+        logger.error('Error updating product:', error);
         res.status(400).json({ message: error.message });
     }
-};
+}
 
-// Controlador para eliminar un producto por su ID
-const deleteProduct = async (req, res) => {
+export async function deleteProduct(req, res) {
     try {
-        await Product.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Product deleted successfully' });
+        const product = await Product.findById(req.params.id);
+        if (!product) {
+            return res.status(404).send({ status: 'error', message: 'Product not found.' });
+        }
+
+        const user = await User.findById(req.user._id);
+
+        if (user.role !== 'admin' && String(product.owner) !== String(user._id)) {
+            return res.status(403).send({ status: 'error', message: 'You do not have permission to delete this product.' });
+        }
+
+        await product.remove();
+        res.send({ status: 'success', message: 'Product deleted successfully.' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        logger.error('Error deleting product:', error);
+        res.status(500).send({ status: 'error', message: 'Internal server error.' });
     }
-};
+}
 
 export default {
     getProducts,

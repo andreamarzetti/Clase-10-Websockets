@@ -1,6 +1,6 @@
 // src/repository/ProductRepository.js
 
-import ProductDAO from '../dao/mongodb/ProductDAO.js';
+import ProductDAO from '../dao/ProductDAO.js';
 import ProductDTO from '../dto/ProductDTO.js';
 
 class ProductRepository {

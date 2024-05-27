@@ -1,6 +1,6 @@
 // src/dao/mongodb/ProductDAO.js
 
-import ProductModel from './models/ProductModel.js';
+import ProductModel from '../dao/mongodb/models/ProductModel.js';
 
 class ProductDAO {
     async getProducts(limit = 10, page = 1, sort = {}, query = {}) {

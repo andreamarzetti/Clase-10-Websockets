@@ -4,6 +4,7 @@ import express from 'express';
 import UserService from '../services/UserService.js';
 import UserDTO from '../dto/UserDTO.js';
 import authMiddleware from '../middleware/authMiddleware.js';
+import { changeUserRole } from '../controllers/user.controller.js';
 
 const router = express.Router();
 
@@ -57,5 +58,7 @@ router.get('/current', authMiddleware(['admin', 'user']), async (req, res) => {
         res.status(500).json({ message: 'Error al recuperar el usuario' });
     }
 });
+
+router.patch('/premium/:uid', changeUserRole);
 
 export default router;
