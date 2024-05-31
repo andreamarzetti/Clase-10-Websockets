@@ -1,13 +1,80 @@
-// src/routes/carts.router.js
-
-import express from "express";
-import CartService from "../services/CartService.js";
+// src/routes/cart.router.js
+import express from 'express';
+import CartService from '../services/CartService.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Ruta para listar los productos de un carrito específico
-router.get("/:cid", async (req, res) => {
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Cart:
+ *       type: object
+ *       required:
+ *         - products
+ *       properties:
+ *         products:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               productId:
+ *                 type: string
+ *               quantity:
+ *                 type: number
+ *       example:
+ *         products:
+ *           - productId: 60b5edbb4d1b2c0015d8d6e7
+ *             quantity: 2
+ */
+
+/**
+ * @swagger
+ * /cart:
+ *   post:
+ *     summary: Add a product to the cart
+ *     tags: [Cart]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Cart'
+ *     responses:
+ *       200:
+ *         description: Product added to cart successfully
+ *       400:
+ *         description: You cannot add your own product to the cart
+ *       500:
+ *         description: Internal server error
+ */
+router.post('/', addToCart);
+
+/**
+ * @swagger
+ * /cart/{cid}:
+ *   get:
+ *     summary: Get a specific cart by id
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: cid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The cart id
+ *     responses:
+ *       200:
+ *         description: The cart description by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cart'
+ *       404:
+ *         description: The cart was not found
+ */
+router.get('/:cid', async (req, res) => {
     const cartId = req.params.cid;
     try {
         const cart = await CartService.getCart(cartId);
@@ -17,8 +84,42 @@ router.get("/:cid", async (req, res) => {
     }
 });
 
-// Ruta para agregar un producto al carrito
-router.post("/:cid/product/:pid", async (req, res) => {
+/**
+ * @swagger
+ * /cart/{cid}/product/{pid}:
+ *   post:
+ *     summary: Add a product to a specific cart
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: cid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The cart id
+ *       - in: path
+ *         name: pid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The product id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               quantity:
+ *                 type: number
+ *                 example: 1
+ *     responses:
+ *       200:
+ *         description: Product added to cart successfully
+ *       404:
+ *         description: Error adding the product to the cart
+ */
+router.post('/:cid/product/:pid', async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     try {
@@ -30,8 +131,32 @@ router.post("/:cid/product/:pid", async (req, res) => {
     }
 });
 
-// Ruta para eliminar un producto específico del carrito
-router.delete("/:cid/products/:pid", async (req, res) => {
+/**
+ * @swagger
+ * /cart/{cid}/products/{pid}:
+ *   delete:
+ *     summary: Remove a product from a specific cart
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: cid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The cart id
+ *       - in: path
+ *         name: pid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The product id
+ *     responses:
+ *       200:
+ *         description: Product removed from cart successfully
+ *       404:
+ *         description: Error removing the product from the cart
+ */
+router.delete('/:cid/products/:pid', async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     try {
@@ -42,8 +167,42 @@ router.delete("/:cid/products/:pid", async (req, res) => {
     }
 });
 
-// Ruta para actualizar la cantidad de un producto en el carrito
-router.put("/:cid/products/:pid", async (req, res) => {
+/**
+ * @swagger
+ * /cart/{cid}/products/{pid}:
+ *   put:
+ *     summary: Update the quantity of a product in a specific cart
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: cid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The cart id
+ *       - in: path
+ *         name: pid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The product id
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               quantity:
+ *                 type: number
+ *                 example: 2
+ *     responses:
+ *       200:
+ *         description: Quantity updated successfully
+ *       404:
+ *         description: Error updating the product quantity in the cart
+ */
+router.put('/:cid/products/:pid', async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     const { quantity } = req.body;
@@ -55,8 +214,26 @@ router.put("/:cid/products/:pid", async (req, res) => {
     }
 });
 
-// Ruta para eliminar todos los productos del carrito
-router.delete("/:cid", async (req, res) => {
+/**
+ * @swagger
+ * /cart/{cid}:
+ *   delete:
+ *     summary: Remove all products from a specific cart
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: cid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The cart id
+ *     responses:
+ *       200:
+ *         description: All products removed from cart successfully
+ *       404:
+ *         description: Error removing the products from the cart
+ */
+router.delete('/:cid', async (req, res) => {
     const cartId = req.params.cid;
     try {
         await CartService.removeAllProductsFromCart(cartId);
@@ -66,8 +243,26 @@ router.delete("/:cid", async (req, res) => {
     }
 });
 
-// Implementación de la ruta para finalizar el proceso de compra
-router.post("/:cid/purchase", authMiddleware(['user']), async (req, res) => {
+/**
+ * @swagger
+ * /cart/{cid}/purchase:
+ *   post:
+ *     summary: Complete the purchase of a specific cart
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: cid
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The cart id
+ *     responses:
+ *       200:
+ *         description: Purchase completed successfully
+ *       500:
+ *         description: Error finalizing the purchase
+ */
+router.post('/:cid/purchase', authMiddleware(['user']), async (req, res) => {
     const cartId = req.params.cid;
     try {
         const result = await CartService.purchaseCart(cartId, req.user.email);

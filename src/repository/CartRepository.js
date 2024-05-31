@@ -1,6 +1,6 @@
 // src/repository/CartRepository.js
 
-import CartDAO from '../dao/mongodb/CartDAO.js';
+import CartDAO from '../dao/CartDAO.js';
 import CartDTO from '../dto/CartDTO.js';  
 
 class CartRepository {

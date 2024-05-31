@@ -1,6 +1,6 @@
 // src/dao/mongodb/CartDAO.js
 
-import CartModel from './models/CartModel.js';
+import CartModel from './mongodb/models/CartModel.js';
 
 class CartDAO {
     async createCart(userId) {

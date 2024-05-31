@@ -20,6 +20,7 @@ import transport from './src/config/mailing.js';
 import logger from './src/config/logger.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import mockingRouter from './src/routes/mocking.routes.js';
+import swaggerRouter from './src/config/swagger.js'; 
 
 const app = express();
 const server = http.createServer(app);
@@ -158,6 +159,8 @@ app.get('/loggerTest', (req, res) => {
 
 // Importa este middleware en tu archivo principal de la aplicación y úsalo como middleware global
 app.use(errorHandler);
+
+app.use('/api-docs', swaggerRouter);
 
 const PORT = config.port;
 server.listen(PORT, () => {

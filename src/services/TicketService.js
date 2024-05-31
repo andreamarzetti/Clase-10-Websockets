@@ -1,6 +1,5 @@
 // src/services/TicketService.js
 import TicketRepository from '../repository/TicketRepository.js';
-import { v4 as uuidv4 } from 'uuid';
 
 class TicketService {
     async createTicket(amount, purchaser) {

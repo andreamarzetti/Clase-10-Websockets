@@ -1,14 +1,14 @@
-// ticket.model.js
-
-const mongoose = require('mongoose');
+// src/dao/mongodb/models/TicketModel.js
+import mongoose from 'mongoose';
 
 const ticketSchema = new mongoose.Schema({
-  code: { type: String, unique: true, required: true },
-  purchase_datetime: { type: Date, default: Date.now },
-  amount: { type: Number, required: true },
-  purchaser: { type: String, required: true }
+    // Define tu esquema aquí
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    event: { type: String, required: true },
+    date: { type: Date, required: true },
+    price: { type: Number, required: true },
 });
 
-const Ticket = mongoose.model('Ticket', ticketSchema);
+const TicketModel = mongoose.model('Ticket', ticketSchema);
 
-module.exports = Ticket;
+export default TicketModel;
