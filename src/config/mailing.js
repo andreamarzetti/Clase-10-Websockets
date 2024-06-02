@@ -3,7 +3,7 @@ import config from "./config.js";
 
 const transport = nodemailer.createTransport({
     service: "gmail",
-    port: 587,
+    port: 8080,
     auth: {
         user: config.gmailUser,
         pass: config.gmailPass,

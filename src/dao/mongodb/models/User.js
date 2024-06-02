@@ -1,4 +1,3 @@
-// src/models/User.js
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
@@ -13,8 +12,8 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'user',
-        enum: ['user', 'premium', 'admin']
+        enum: ['user', 'premium', 'admin'],
+        default: 'user'
     },
     edad: {
         type: Number,
@@ -30,7 +29,16 @@ const userSchema = new mongoose.Schema({
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'carts' // Asegúrate de que 'carts' sea el nombre correcto del modelo del carrito
+        ref: 'carts' 
+    },
+    documents: [
+        {
+            name: { type: String, required: true },
+            reference: { type: String, required: true }
+        }
+    ],
+    last_connection: {
+        type: Date
     }
 });
 

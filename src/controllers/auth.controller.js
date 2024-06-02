@@ -1,49 +1,44 @@
 // src/controllers/auth.controller.js
+import { sendEmail } from '../utils/emailUtils.js';
 import { generateResetToken, verifyResetToken } from '../utils/tokenUtils.js';
-import transport from '../config/mailing.js';
+import User from '../dao/mongodb/models/User.js';
 
-export async function sendResetPasswordEmail(req, res) {
+export const sendResetPasswordEmail = async (req, res) => {
     const { email } = req.body;
-    const token = generateResetToken(email);
-    const resetLink = `http://localhost:3000/resetPassword?token=${token}`;
 
-    await transport.sendMail({
-        from: 'no-reply@yourapp.com',
-        to: email,
-        subject: 'Password Reset',
-        html: `<p>Click the link to reset your password: <a href="${resetLink}">Reset Password</a></p>`
-    });
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).send({ message: 'Usuario no encontrado.' });
+        }
 
-    res.send({ status: 'success', message: 'Reset password email sent.' });
-}
+        const resetToken = generateResetToken(user._id);
+        const resetLink = `${req.protocol}://${req.get('host')}/resetPassword?token=${resetToken}`;
 
-// src/controllers/auth.controller.js
-import bcrypt from 'bcrypt';
-import User from '../models/User.js';
-import { verifyResetToken } from '../utils/tokenUtils.js';
+        await sendEmail(email, 'Password Reset', `Use this link to reset your password: ${resetLink}`);
 
-export async function resetPassword(req, res) {
+        res.send({ message: 'Email de restablecimiento de contraseña enviado.' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error interno del servidor.' });
+    }
+};
+
+export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
-    const payload = verifyResetToken(token);
 
-    if (!payload) {
-        return res.status(400).send({ status: 'error', message: 'Invalid or expired token.' });
+    try {
+        const userId = verifyResetToken(token);
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).send({ message: 'Usuario no encontrado.' });
+        }
+
+        user.password = newPassword; // Asegúrate de hashear la contraseña antes de guardarla
+        await user.save();
+
+        res.send({ message: 'Contraseña restablecida exitosamente.' });
+    } catch (error) {
+        res.status(500).send({ message: 'Error interno del servidor.' });
     }
-
-    const user = await User.findOne({ email: payload.email });
-
-    if (!user) {
-        return res.status(404).send({ status: 'error', message: 'User not found.' });
-    }
-
-    const isSamePassword = await bcrypt.compare(newPassword, user.password);
-    if (isSamePassword) {
-        return res.status(400).send({ status: 'error', message: 'New password must be different from the old password.' });
-    }
-
-    user.password = await bcrypt.hash(newPassword, 10);
-    await user.save();
-
-    res.send({ status: 'success', message: 'Password reset successfully.' });
-}
-
+};

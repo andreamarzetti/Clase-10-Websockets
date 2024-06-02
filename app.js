@@ -21,6 +21,8 @@ import logger from './src/config/logger.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import mockingRouter from './src/routes/mocking.routes.js';
 import swaggerRouter from './src/config/swagger.js'; 
+import usersRouter from './src/routes/users.router.js';
+import authRouter from './src/routes/auth.routes.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -156,6 +158,9 @@ app.get('/loggerTest', (req, res) => {
     logger.fatal('Este es un log de fatal');
     res.send('Logger test finalizado');
 });
+
+app.use('/api/users', usersRouter);
+app.use('/api/auth', authRouter);
 
 // Importa este middleware en tu archivo principal de la aplicación y úsalo como middleware global
 app.use(errorHandler);
