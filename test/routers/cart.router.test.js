@@ -1,11 +1,10 @@
 // test/routes/cart.router.test.js
-import chai from 'chai';
-import chaiHttp from 'chai-http';
+import {expect} from 'chai';
 import app from '../../app.js';
 import Product from '../../src/dao/mongodb/models/ProductModel.js';
 
-const { expect } = chai;
-chai.use(chaiHttp);
+//chai.use(chaiHttp);
+
 
 describe('Carts API', () => {
     let cartId;

@@ -1,5 +1,3 @@
-// src/controllers/user.controller.js
-
 import User from '../dao/mongodb/models/User.js';
 import logger from '../config/logger.js';
 

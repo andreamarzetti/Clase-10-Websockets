@@ -1,24 +1,24 @@
-// src/routes/users.router.js
-
 import express from 'express';
+import multer from 'multer';
 import UserService from '../services/UserService.js';
 import UserDTO from '../dto/UserDTO.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import { changeUserRole, updateUserToPremium, uploadUserDocuments } from '../controllers/user.controller.js';
-import multer from 'multer';
 
 const router = express.Router();
 
-// Configuración de Multer para el almacenamiento de archivos
+// Configuración de almacenamiento de Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    let folder = 'uploads/';
     if (file.fieldname === 'profile') {
-      cb(null, 'uploads/profiles/');
+      folder += 'profiles/';
     } else if (file.fieldname === 'product') {
-      cb(null, 'uploads/products/');
+      folder += 'products/';
     } else if (file.fieldname === 'document') {
-      cb(null, 'uploads/documents/');
+      folder += 'documents/';
     }
+    cb(null, folder);
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -79,12 +79,12 @@ router.get('/current', authMiddleware(['admin', 'user']), async (req, res) => {
 });
 
 // Ruta para cambiar el rol del usuario a premium
-router.patch('/premium/:uid', changeUserRole);
+router.patch('/role/:uid', authMiddleware(['admin']), changeUserRole);
 
 // Ruta para actualizar el usuario a premium si ha subido los documentos requeridos
-router.put('/premium/:uid', updateUserToPremium);
+router.put('/premium/:uid', authMiddleware(['admin']), updateUserToPremium);
 
 // Ruta para subir documentos del usuario
-router.post('/:uid/documents', upload.array('documents', 10), uploadUserDocuments);
+router.post('/:uid/documents', authMiddleware(['user', 'admin']), upload.array('documents', 10), uploadUserDocuments);
 
 export default router;

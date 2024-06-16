@@ -1,4 +1,3 @@
-// src/middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
 
 const authMiddleware = (roles) => (req, res, next) => {

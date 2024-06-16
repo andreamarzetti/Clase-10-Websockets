@@ -1,11 +1,9 @@
 // test/routes/product.router.test.js
-import chai from 'chai';
-import chaiHttp from 'chai-http';
+import {expect} from 'chai';
 import app from '../../app.js';
 import Product from '../../src/models/ProductModel.js';
 
-const { expect } = chai;
-chai.use(chaiHttp);
+//chai.use(chaiHttp);
 
 describe('Products API', () => {
     let productId;

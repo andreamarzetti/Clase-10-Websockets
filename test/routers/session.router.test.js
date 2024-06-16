@@ -1,11 +1,9 @@
 // test/routes/session.router.test.js
-import chai from 'chai';
-import chaiHttp from 'chai-http';
+import {expect} from 'chai';
 import app from '../../app.js';
-import User from '../../src/models/User.js';
+import User from '../../src/dao/mongodb/models/User.js';
 
-const { expect } = chai;
-chai.use(chaiHttp);
+//chai.use(chaiHttp);
 
 describe('Sessions API', () => {
     let token;

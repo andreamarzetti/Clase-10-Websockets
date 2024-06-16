@@ -24,6 +24,8 @@ import swaggerRouter from './src/config/swagger.js';
 import usersRouter from './src/routes/users.router.js';
 import authRouter from './src/routes/auth.routes.js';
 
+
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
