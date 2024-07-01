@@ -1,12 +1,12 @@
-// src/models/Product.js
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    price: Number,
-    stock: Number,
-    thumbnails: [String],
+    name: { type: String, required: true },
+    title: String, 
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
+    stock: { type: Number, required: true },
+    thumbnails: { type: [String], required: true },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // Referencia al modelo User para el propietario del producto
@@ -14,6 +14,6 @@ const productSchema = new mongoose.Schema({
     }
 });
 
-const ProductModel = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
 
-export default ProductModel;
+export default Product;

@@ -1,6 +1,8 @@
 // src/routes/products.router.js
 import express from 'express';
 import ProductManager from '../dao/mongodb/manager/ProductManager.js';
+import checkAuthMethod from '../utils/authMethods.js';
+import jwt from 'jsonwebtoken'
 
 const router = express.Router();
 const productManagerInstance = new ProductManager();
@@ -56,7 +58,10 @@ const productManagerInstance = new ProductManager();
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-router.get('/', async (req, res) => {
+router.get('/', checkAuthMethod, async (req, res) => {
+
+    console.log(req.user)
+
     try {
         let { limit = 10, page = 1, sort, query } = req.query;
         limit = parseInt(limit);

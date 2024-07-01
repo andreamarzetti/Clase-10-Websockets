@@ -1,24 +1,24 @@
+<!-- views/home.handlebars -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Productos</title>
+    <title>Productos</title>
 </head>
 <body>
-    <h1>Lista de Productos</h1>
-
-    {{#if products}}
-        <ul>
-            {{#each products}}
-                <li>
-                    {{title}} - {{description}} - {{price}} - {{stock}}
-                    <img src="{{thumbnails}}" alt="{{title}}" width="50">
-                </li>
-            {{/each}}
-        </ul>
-    {{else}}
-        <p>No hay productos disponibles actualmente.</p>
-    {{/if}}
+    <h1>Productos</h1>
+    <ul>
+        {{#each products}}  <!-- Iterar sobre cada producto -->
+            <li>
+                <h3>{{this.title}}</h3>  <!-- Mostrar el título del producto -->
+                <p>{{this.description}}</p>  <!-- Mostrar la descripción del producto -->
+                <p>ID: {{this._id}}</p>  <!-- Mostrar el ID del producto -->
+                <p>Precio: {{this.price}}</p>  <!-- Mostrar el precio del producto -->
+                <p>Stock: {{this.stock}}</p>  <!-- Mostrar el stock del producto -->
+            </li>
+        {{else}}
+            <li>No hay productos disponibles</li>  <!-- Mensaje si no hay productos -->
+        {{/each}}
+    </ul>
 </body>
 </html>

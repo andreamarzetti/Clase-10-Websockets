@@ -113,6 +113,17 @@ io.on('connection', (socket) => {
     });
 });
 
+
+// Configuración del motor de plantillas Handlebars
+app.engine('handlebars', exphbs.engine({
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true, // Agrega esta opción
+        allowProtoMethodsByDefault: true    // Agrega esta opción
+    }
+}));
+app.set('views', path.join(__dirname, 'src', 'views'));
+app.set('view engine', 'handlebars');
+
 app.use(express.json());
 app.use(cors());
 app.get('/test', (req, res) => {

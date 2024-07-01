@@ -1,9 +1,11 @@
 // sessionRouter.js
 import express from "express";
 import passport from "passport";
+import User from '../dao/mongodb/models/User.js'; 
+import CartModel from "../dao/mongodb/models/CartModel.js";
+
 const router = express.Router();
 
-import User from '../dao/mongodb/models/User.js'; // Ajusta la ruta según la ubicación real de tu modelo de usuario
 
 // Ruta para mostrar el formulario de login
 router.get("/login", (req, res) => {
@@ -24,6 +26,7 @@ router.post("/login", async (req, res) => {
         
         // Inicia sesión y redirige al usuario a la página de productos
         req.session.user = user;
+
         res.redirect("/products");
     } catch (error) {
         console.error("Error de autenticación:", error);
@@ -39,11 +42,12 @@ router.get("/register", (req, res) => {
 // Ruta para procesar la solicitud de registro
 router.post("/register", async (req, res) => {
     const { email, password, firstname, lastname, age } = req.body;
+
     try {
-        // Implementa la lógica para registrar al usuario en tu base de datos
-        const newUser = new User({ email, password, firstname, lastname, age });
+
+        const cart = new CartModel();
+        const newUser = new User({ email, password, firstname, lastname, age, cart });
         await newUser.save();
-        // Inicia sesión y redirige al usuario a la página de productos
         req.session.user = newUser;
         res.redirect("/products");
     } catch (error) {
@@ -52,12 +56,11 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// Ruta para iniciar sesión con GitHub
-router.get("/auth/github", passport.authenticate("github"));
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }), async (req, res) => { });
+router.get('/githubcallback', passport.authenticate('github', { failureRedirect: '/login' }), async (req, res) => {
 
-// Ruta de devolución de llamada de autenticación de GitHub
-router.get("/auth/github/callback", passport.authenticate("github", { failureRedirect: "/login" }), (req, res) => {
-    res.redirect("/products");
-});
+  req.session.user = req.user;
+  res.redirect('/');
+})
 
 export default router;

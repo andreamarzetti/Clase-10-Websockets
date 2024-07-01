@@ -3,15 +3,15 @@ import Product from '../dao/mongodb/models/ProductModel.js';
 import User from '../dao/mongodb/models/User.js';
 import logger from '../config/logger.js';
 
-export async function getProducts(req, res) {
+export const getProducts = async (req, res) => {
     try {
         const products = await Product.find();
-        res.json(products);
+        return (products);
     } catch (error) {
-        logger.error('Error fetching products:', error);
-        res.status(500).json({ message: 'Internal server error.' });
+        console.error('Error al obtener los productos:', error);
+        res.status(500).json({ message: 'Error al obtener los productos' });
     }
-}
+};
 
 export async function createProduct(req, res) {
     try {
