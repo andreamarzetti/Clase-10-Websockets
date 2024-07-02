@@ -8,24 +8,22 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
     },
     role: {
         type: String,
         enum: ['user', 'premium', 'admin'],
         default: 'user'
     },
-    edad: {
+    age: {
         type: Number,
         required: true
     },
-    nombre: {
+    firstname: {
         type: String,
         required: true
     },
-    apellido: {
+    lastname: {
         type: String,
-        required: true
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,

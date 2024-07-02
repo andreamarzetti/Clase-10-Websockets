@@ -1,0 +1,76 @@
+# Proyecto Backend
+
+Este proyecto es una aplicación de backend que incluye autenticación de usuarios, gestión de productos y 
+un carrito de compras. A continuación se detallan los endpoints disponibles y cómo funciona cada uno.
+
+1ero se tendria que registrar como usuario , despues ir a login para ingresar con ese usuario registrado o tambien
+se puede ingresar desde github y desde ahi te dirige a home en donde se encuentran los diferentes productos y desde 
+el home podes seleccionar que producto queres comprar y vas al cart en donde estan los productos seleccionados
+## Endpoints
+
+### Home
+
+- **URL:** `/home`
+- **Método:** `GET`
+- **Descripción:** Muestra la página principal con la lista de productos.
+- **Ejemplo de Uso:**
+  ```bash
+  GET http://localhost:8080/home
+
+  En este endpoint es donde te aparece para agregar al carrito los diferentes productos
+
+
+Registro de Usuario
+URL: /register
+Método: GET (para mostrar el formulario de registro), POST (para registrar un nuevo usuario)
+Descripción: Permite a los usuarios registrarse en la aplicación.
+Ejemplo de Uso:
+GET http://localhost:8080/register
+
+POST http://localhost:8080/register
+# Body (form-data):
+# {
+#   "username": "usuario",
+#   "email": "usuario@example.com",
+#   "password": "password"
+# }
+
+
+Inicio de Sesión
+URL: /login
+Método: GET (para mostrar el formulario de inicio de sesión), POST (para autenticar al usuario)
+Descripción: Permite a los usuarios iniciar sesión en la aplicación.
+Ejemplo de Uso:
+GET http://localhost:8080/login
+
+POST http://localhost:8080/login
+# Body (form-data):
+# {
+#   "email": "usuario@example.com",
+#   "password": "password"
+# }
+
+
+Cerrar Sesión
+URL: /logout
+Método: GET
+Descripción: Permite a los usuarios cerrar sesión en la aplicación.
+Ejemplo de Uso:
+GET http://localhost:8080/logout
+
+
+Productos
+URL: /products
+Método: GET (para obtener la lista de productos)
+Descripción: Devuelve una lista de todos los productos disponibles.
+Ejemplo de Uso:
+GET http://localhost:8080/products
+
+
+Carrito de Compras
+Ver Carrito:
+URL: /cart
+Método: GET
+Descripción: Muestra los productos en el carrito del usuario.
+Ejemplo de Uso:
+GET http://localhost:8080/cart

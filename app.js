@@ -23,7 +23,7 @@ import mockingRouter from './src/routes/mocking.routes.js';
 import swaggerRouter from './src/config/swagger.js'; 
 import usersRouter from './src/routes/users.router.js';
 import authRouter from './src/routes/auth.routes.js';
-
+import cartRouter from './src/routes/carts.routes.js'; // Importa las rutas del carrito
 
 
 const app = express();
@@ -66,6 +66,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/products', productsRouter);
+
 
 // Configuración de express-session con almacenamiento en MongoDB
 const store = MongoStore.create({

@@ -1,6 +1,6 @@
 // src/dao/mongodb/UserDAO.js
 
-import UserModel from './models/UserModel.js';
+import UserModel from '../dao/mongodb/models/User.js';
 
 class UserDAO {
     async createUser(userData) {
@@ -11,6 +11,10 @@ class UserDAO {
 
     async getUserById(userId) {
         return await UserModel.findById(userId).populate('cart');
+    }
+
+    async getUserByEmail(email) {
+        return await UserModel.findOne({ email });
     }
 
     async updateUser(userId, userData) {

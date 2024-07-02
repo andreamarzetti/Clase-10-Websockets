@@ -58,9 +58,9 @@ const productManagerInstance = new ProductManager();
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-router.get('/', checkAuthMethod, async (req, res) => {
+router.get('/', async (req, res) => {
 
-    console.log(req.user)
+    //console.log(req.user)
 
     try {
         let { limit = 10, page = 1, sort, query } = req.query;
